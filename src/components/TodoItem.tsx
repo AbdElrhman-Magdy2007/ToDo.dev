@@ -8,7 +8,7 @@ import { Check, Trash2, Edit, Clock, Calendar } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { motion } from "framer-motion";
-import { getDeadlineStatus, formatDateTime, formatTime } from "@/utils/date-utils";
+import { getDeadlineStatus, formatTime } from "@/utils/date-utils";
 
 interface TodoItemProps {
   todo: Todo;
@@ -189,14 +189,14 @@ export function TodoItem({ todo }: TodoItemProps) {
               {todo.startTime && (
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <Clock className="h-3 w-3" />
-                  <span>Start: {formatDateTime(todo.startTime)}</span>
+                  <span>Start: {formatTime(todo.startTime)}</span>
                 </div>
               )}
               
               {todo.dueTime && (
                 <div className={`flex items-center gap-1 ${getTimeColor()}`}>
                   <Calendar className="h-3 w-3" />
-                  <span>Due: {formatDateTime(todo.dueTime)}</span>
+                  <span>Due: {formatTime(todo.dueTime)}</span>
                 </div>
               )}
             </div>

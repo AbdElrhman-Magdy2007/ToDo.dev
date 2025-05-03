@@ -44,7 +44,7 @@ export const formatDateTime = (dateTimeString?: string): string => {
 };
 
 /**
- * Format a time string to a readable format
+ * Format a time string to a readable format (hour and minute only)
  * @param dateTimeString The date/time string in ISO format
  * @returns A formatted time string
  */
@@ -61,5 +61,54 @@ export const formatTime = (dateTimeString?: string): string => {
     });
   } catch (error) {
     return '';
+  }
+};
+
+/**
+ * Format a date string to a readable format (short month and day only)
+ * @param dateTimeString The date/time string in ISO format
+ * @returns A formatted date string
+ */
+export const formatDate = (dateTimeString?: string): string => {
+  if (!dateTimeString) return '';
+  
+  try {
+    const date = new Date(dateTimeString);
+    if (isNaN(date.getTime())) return '';
+    
+    return date.toLocaleDateString(undefined, { 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  } catch (error) {
+    return '';
+  }
+};
+
+/**
+ * Get today's date as an ISO string but with time set to a specific hour and minute
+ * @param hours Hour to set (24-hour format)
+ * @param minutes Minutes to set
+ * @returns ISO string with today's date and specified time
+ */
+export const getTodayWithTime = (hours: number, minutes: number): string => {
+  const today = new Date();
+  today.setHours(hours, minutes, 0, 0);
+  return today.toISOString();
+};
+
+/**
+ * Parse a time string (HH:MM) and convert it to today's date with that time
+ * @param timeString Time in format HH:MM (24-hour)
+ * @returns ISO string with today's date and specified time
+ */
+export const parseTimeToToday = (timeString: string): string | null => {
+  if (!timeString) return null;
+  
+  try {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    return getTodayWithTime(hours, minutes);
+  } catch (error) {
+    return null;
   }
 };

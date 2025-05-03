@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { parseTimeToToday } from "@/utils/date-utils";
 
 const todoSchema = z.object({
   title: z.string().min(1, "Task name cannot be empty").max(100, "Task name is too long"),
@@ -26,11 +27,12 @@ export function TodoForm() {
     try {
       todoSchema.parse({ title, startTime, dueTime });
       
-      // Convert to ISO string for storage if time is set
-      const startTimeISO = startTime ? new Date(startTime).toISOString() : undefined;
-      const dueTimeISO = dueTime ? new Date(dueTime).toISOString() : undefined;
+      // Convert time inputs to ISO strings with today's date
+      const startTimeISO = parseTimeToToday(startTime);
+      const dueTimeISO = parseTimeToToday(dueTime);
       
-      addTodo(title, startTimeISO, dueTimeISO);
+      addTodo(title, startTimeISO || undefined, dueTimeISO || undefined);
+      
       setTitle("");
       setStartTime("");
       setDueTime("");
@@ -72,7 +74,7 @@ export function TodoForm() {
             Start Time
           </label>
           <Input
-            type="datetime-local"
+            type="time"
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
             className="w-full"
@@ -84,7 +86,7 @@ export function TodoForm() {
             Due Time
           </label>
           <Input
-            type="datetime-local"
+            type="time"
             value={dueTime}
             onChange={(e) => setDueTime(e.target.value)}
             className="w-full"

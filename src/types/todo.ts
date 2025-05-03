@@ -8,4 +8,4 @@ export interface Todo {
   dueTime?: string;
 }
 
-export type TodoFilter = 'all' | 'active' | 'completed';
+export type TodoFilter = 'all' | 'active' | 'completed' | 'due-soon';

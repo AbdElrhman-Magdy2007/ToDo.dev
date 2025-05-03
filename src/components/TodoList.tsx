@@ -26,11 +26,21 @@ export function TodoList() {
 
   // Move the filtering logic to this component to avoid unnecessary renders
   const filteredTodos = useMemo(() => {
+    const now = new Date();
+    
     switch (filter) {
       case 'active':
         return todos.filter((todo) => !todo.completed);
       case 'completed':
         return todos.filter((todo) => todo.completed);
+      case 'due-soon':
+        return todos.filter((todo) => {
+          if (!todo.dueTime || todo.completed) return false;
+          const dueDate = new Date(todo.dueTime);
+          const diffMs = dueDate.getTime() - now.getTime();
+          const diffHours = diffMs / (1000 * 60 * 60);
+          return diffMs > 0 && diffHours <= 24;
+        });
       default:
         return todos;
     }

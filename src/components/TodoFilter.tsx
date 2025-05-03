@@ -15,6 +15,7 @@ export function TodoFilter() {
     { value: "all", label: "All" },
     { value: "active", label: "Active" },
     { value: "completed", label: "Completed" },
+    { value: "due-soon", label: "Due Soon" },
   ];
 
   // Use useMemo to prevent recalculating on every render
