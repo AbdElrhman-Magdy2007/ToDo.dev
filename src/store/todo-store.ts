@@ -13,7 +13,6 @@ interface TodoState {
   updateTodoTitle: (id: string, title: string) => void;
   reorderTodos: (startIndex: number, endIndex: number) => void;
   clearCompleted: () => void;
-  filteredTodos: () => Todo[];
 }
 
 export const useTodoStore = create<TodoState>()(
@@ -72,19 +71,6 @@ export const useTodoStore = create<TodoState>()(
         set((state) => ({
           todos: state.todos.filter((todo) => !todo.completed),
         }));
-      },
-      
-      filteredTodos: () => {
-        const { todos, filter } = get();
-        
-        switch (filter) {
-          case 'active':
-            return todos.filter((todo) => !todo.completed);
-          case 'completed':
-            return todos.filter((todo) => todo.completed);
-          default:
-            return todos;
-        }
       },
     }),
     {

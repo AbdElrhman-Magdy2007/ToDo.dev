@@ -4,6 +4,7 @@ import { TodoFilter as FilterType } from "@/types/todo";
 import { Button } from "@/components/ui/button";
 
 export function TodoFilter() {
+  // Fix: Use a selector function that returns an object to prevent re-renders
   const { filter, setFilter, todos } = useTodoStore(state => ({
     filter: state.filter,
     setFilter: state.setFilter,
@@ -16,6 +17,7 @@ export function TodoFilter() {
     { value: "completed", label: "Completed" },
   ];
 
+  // Calculate these values from the todos, not in a render causing more updates
   const activeTodoCount = todos.filter(todo => !todo.completed).length;
   const completedCount = todos.filter(todo => todo.completed).length;
   

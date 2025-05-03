@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 export function TodoActions() {
+  // Fix: Use a selector function that returns an object to prevent re-renders
   const { todos, clearCompleted } = useTodoStore(state => ({
     todos: state.todos,
     clearCompleted: state.clearCompleted

@@ -11,7 +11,11 @@ import { sampleTasks } from "@/utils/sample-tasks";
 import { toast } from "sonner";
 
 export function TodoApp() {
-  const { todos, addTodo } = useTodoStore();
+  // Fix: Use a selector function that returns an object to prevent re-renders
+  const { todos, addTodo } = useTodoStore(state => ({
+    todos: state.todos,
+    addTodo: state.addTodo
+  }));
   const [isLoaded, setIsLoaded] = useState(false);
   
   useEffect(() => {
