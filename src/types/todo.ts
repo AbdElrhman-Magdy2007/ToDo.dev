@@ -4,6 +4,8 @@ export interface Todo {
   title: string;
   completed: boolean;
   createdAt: string;
+  startTime?: string;
+  dueTime?: string;
 }
 
 export type TodoFilter = 'all' | 'active' | 'completed';

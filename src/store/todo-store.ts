@@ -7,10 +7,11 @@ interface TodoState {
   todos: Todo[];
   filter: TodoFilter;
   setFilter: (filter: TodoFilter) => void;
-  addTodo: (title: string) => void;
+  addTodo: (title: string, startTime?: string, dueTime?: string) => void;
   toggleTodo: (id: string) => void;
   removeTodo: (id: string) => void;
   updateTodoTitle: (id: string, title: string) => void;
+  updateTodoTimes: (id: string, startTime?: string, dueTime?: string) => void;
   reorderTodos: (startIndex: number, endIndex: number) => void;
   clearCompleted: () => void;
 }
@@ -23,12 +24,14 @@ export const useTodoStore = create<TodoState>()(
       
       setFilter: (filter) => set({ filter }),
       
-      addTodo: (title) => {
+      addTodo: (title, startTime, dueTime) => {
         const newTodo: Todo = {
           id: crypto.randomUUID(),
           title,
           completed: false,
           createdAt: new Date().toISOString(),
+          startTime,
+          dueTime,
         };
         
         set((state) => ({
@@ -54,6 +57,14 @@ export const useTodoStore = create<TodoState>()(
         set((state) => ({
           todos: state.todos.map((todo) =>
             todo.id === id ? { ...todo, title } : todo
+          ),
+        }));
+      },
+      
+      updateTodoTimes: (id, startTime, dueTime) => {
+        set((state) => ({
+          todos: state.todos.map((todo) =>
+            todo.id === id ? { ...todo, startTime, dueTime } : todo
           ),
         }));
       },
