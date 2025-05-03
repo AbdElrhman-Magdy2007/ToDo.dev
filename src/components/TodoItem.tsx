@@ -103,17 +103,26 @@ export function TodoItem({ todo }: TodoItemProps) {
   const [editedStartTime, setEditedStartTime] = useState(formatForTimeInput(todo.startTime));
   const [editedDueTime, setEditedDueTime] = useState(formatForTimeInput(todo.dueTime));
 
-  // Drag-and-drop setup
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: todo.id,
-  });
+  // Drag-and-drop setup with long press (2s)
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({
+      id: todo.id,
+      disabled: isEditing, // Disable drag during editing
+      transition: {
+        duration: 300,
+        easing: "ease-in-out",
+      },
+    });
 
+  // Apply styles for drag-and-drop
   const style = useMemo(
     () => ({
       transform: CSS.Transform.toString(transform),
       transition,
+      zIndex: isDragging ? 10 : 0, // Elevate dragged item
+      boxShadow: isDragging ? "0 4px 12px rgba(0, 0, 0, 0.2)" : "none", // Visual feedback
     }),
-    [transform, transition]
+    [transform, transition, isDragging]
   );
 
   // Compute deadline status and styles
@@ -203,13 +212,14 @@ export function TodoItem({ todo }: TodoItemProps) {
       {...attributes}
       className={`flex items-center gap-3 p-3 rounded-lg border ${bg} ${border} ${
         todo.completed ? "opacity-70" : ""
-      } group touch-none select-none`}
+      } group touch-none select-none ${isDragging ? "cursor-grabbing" : "cursor-default"}`}
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 10 }}
       transition={{ duration: 0.2 }}
       role="listitem"
       aria-label={`Todo: ${todo.title}`}
+      aria-grabbed={isDragging}
     >
       {/* Completion Toggle */}
       <Button
@@ -220,6 +230,7 @@ export function TodoItem({ todo }: TodoItemProps) {
         }`}
         onClick={handleToggle}
         aria-label={todo.completed ? "Mark as incomplete" : "Mark as complete"}
+        disabled={isEditing}
       >
         {todo.completed && <Check className="h-4 w-4" />}
       </Button>
@@ -279,7 +290,10 @@ export function TodoItem({ todo }: TodoItemProps) {
         </div>
       ) : (
         /* Display Mode */
-        <div className="flex-1 cursor-grab active:cursor-grabbing" {...listeners}>
+        <div
+          className={`flex-1 ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
+          {...listeners}
+        >
           <div className="flex flex-col space-y-1">
             <span
               className={`text-sm font-medium ${
@@ -314,7 +328,7 @@ export function TodoItem({ todo }: TodoItemProps) {
           onClick={moveToTop}
           className="flex-shrink-0 h-8 w-8 sm:h-9 sm:w-9"
           aria-label="Move task to top"
-          disabled={isEditing}
+          disabled={isEditing || isDragging}
         >
           <ArrowUp className="h-4 w-4" />
         </Button>
@@ -324,7 +338,7 @@ export function TodoItem({ todo }: TodoItemProps) {
           onClick={moveToBottom}
           className="flex-shrink-0 h-8 w-8 sm:h-9 sm:w-9"
           aria-label="Move task to bottom"
-          disabled={isEditing}
+          disabled={isEditing || isDragging}
         >
           <ArrowDown className="h-4 w-4" />
         </Button> */}
@@ -332,7 +346,7 @@ export function TodoItem({ todo }: TodoItemProps) {
           variant="ghost"
           size="icon"
           onClick={startEditing}
-          disabled={isEditing || todo.completed}
+          disabled={isEditing || todo.completed || isDragging}
           className="flex-shrink-0 h-8 w-8 sm:h-9 sm:w-9"
           aria-label="Edit task"
         >
@@ -344,6 +358,7 @@ export function TodoItem({ todo }: TodoItemProps) {
           onClick={handleRemove}
           className="flex-shrink-0 h-8 w-8 sm:h-9 sm:w-9 text-destructive"
           aria-label="Delete task"
+          disabled={isEditing || isDragging}
         >
           <Trash2 className="h-4 w-4" />
         </Button>
