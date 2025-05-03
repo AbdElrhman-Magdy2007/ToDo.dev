@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useTodoStore } from "@/store/todo-store";
 import { TodoFilter as FilterType } from "@/types/todo";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 export function TodoFilter() {
   // Use separate selectors to minimize re-renders
@@ -24,7 +25,12 @@ export function TodoFilter() {
   }, [todos]);
   
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-center gap-3 mb-4">
+    <motion.div 
+      className="flex flex-col sm:flex-row justify-between items-center gap-3 mb-4"
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       <div className="text-sm text-muted-foreground">
         {activeTodoCount} task{activeTodoCount !== 1 ? 's' : ''} left
         {completedCount > 0 && ` • ${completedCount} completed`}
@@ -37,11 +43,12 @@ export function TodoFilter() {
             variant={filter === filterOption.value ? "default" : "outline"}
             size="sm"
             onClick={() => setFilter(filterOption.value)}
+            className={filter === filterOption.value ? "" : "hover:bg-primary/10"}
           >
             {filterOption.label}
           </Button>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }

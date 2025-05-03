@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useTodoStore } from "@/store/todo-store";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 export function TodoActions() {
   // Use separate selectors to minimize re-renders
@@ -23,14 +24,20 @@ export function TodoActions() {
   };
 
   return (
-    <div className="mt-6 flex justify-end">
+    <motion.div 
+      className="mt-6 flex justify-end"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
       <Button 
         variant="outline" 
         onClick={handleClearCompleted}
         disabled={completedCount === 0}
+        className="hover:bg-primary/10"
       >
         Clear completed
       </Button>
-    </div>
+    </motion.div>
   );
 }
