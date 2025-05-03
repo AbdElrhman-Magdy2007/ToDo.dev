@@ -1,16 +1,19 @@
 
+import { useMemo } from "react";
 import { useTodoStore } from "@/store/todo-store";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 export function TodoActions() {
-  // Fix: Use a selector function that returns an object to prevent re-renders
-  const { todos, clearCompleted } = useTodoStore(state => ({
-    todos: state.todos,
-    clearCompleted: state.clearCompleted
-  }));
+  // Use separate selectors to minimize re-renders
+  const todos = useTodoStore(state => state.todos);
+  const clearCompleted = useTodoStore(state => state.clearCompleted);
 
-  const completedCount = todos.filter(todo => todo.completed).length;
+  // Use useMemo to prevent recalculating on every render
+  const completedCount = useMemo(() => 
+    todos.filter(todo => todo.completed).length, 
+    [todos]
+  );
 
   const handleClearCompleted = () => {
     if (completedCount > 0) {

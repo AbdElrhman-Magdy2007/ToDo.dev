@@ -19,12 +19,10 @@ import {
 } from "@dnd-kit/sortable";
 
 export function TodoList() {
-  // Fix: Use a selector function that returns an object, and extract filteredTodos function
-  const { todos, reorderTodos, filter } = useTodoStore((state) => ({
-    todos: state.todos,
-    reorderTodos: state.reorderTodos,
-    filter: state.filter
-  }));
+  // Use separate selectors to minimize re-renders
+  const todos = useTodoStore(state => state.todos);
+  const filter = useTodoStore(state => state.filter);
+  const reorderTodos = useTodoStore(state => state.reorderTodos);
 
   // Move the filtering logic to this component to avoid unnecessary renders
   const filteredTodos = useMemo(() => {
@@ -45,7 +43,10 @@ export function TodoList() {
     })
   );
 
-  const todoIds = useMemo(() => filteredTodos.map((todo) => todo.id), [filteredTodos]);
+  const todoIds = useMemo(() => 
+    filteredTodos.map((todo) => todo.id), 
+    [filteredTodos]
+  );
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;

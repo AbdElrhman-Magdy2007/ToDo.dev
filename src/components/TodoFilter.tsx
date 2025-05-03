@@ -1,15 +1,14 @@
 
+import { useMemo } from "react";
 import { useTodoStore } from "@/store/todo-store";
 import { TodoFilter as FilterType } from "@/types/todo";
 import { Button } from "@/components/ui/button";
 
 export function TodoFilter() {
-  // Fix: Use a selector function that returns an object to prevent re-renders
-  const { filter, setFilter, todos } = useTodoStore(state => ({
-    filter: state.filter,
-    setFilter: state.setFilter,
-    todos: state.todos
-  }));
+  // Use separate selectors to minimize re-renders
+  const filter = useTodoStore(state => state.filter);
+  const setFilter = useTodoStore(state => state.setFilter);
+  const todos = useTodoStore(state => state.todos);
   
   const filters: { value: FilterType; label: string }[] = [
     { value: "all", label: "All" },
@@ -17,9 +16,12 @@ export function TodoFilter() {
     { value: "completed", label: "Completed" },
   ];
 
-  // Calculate these values from the todos, not in a render causing more updates
-  const activeTodoCount = todos.filter(todo => !todo.completed).length;
-  const completedCount = todos.filter(todo => todo.completed).length;
+  // Use useMemo to prevent recalculating on every render
+  const { activeTodoCount, completedCount } = useMemo(() => {
+    const active = todos.filter(todo => !todo.completed).length;
+    const completed = todos.filter(todo => todo.completed).length;
+    return { activeTodoCount: active, completedCount: completed };
+  }, [todos]);
   
   return (
     <div className="flex flex-col sm:flex-row justify-between items-center gap-3 mb-4">
