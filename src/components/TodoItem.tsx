@@ -255,7 +255,7 @@ export function TodoItem({ todo }: TodoItemProps) {
                 htmlFor={`start-time-${todo.id}`}
                 className="block text-xs text-muted-foreground mb-1"
               >
-                Start Time (e.g., 2:30 PM)
+                {/* Start Time (e.g., 2:30 PM) */}
               </label>
               <Input
                 id={`start-time-${todo.id}`}
@@ -273,7 +273,7 @@ export function TodoItem({ todo }: TodoItemProps) {
                 htmlFor={`due-time-${todo.id}`}
                 className="block text-xs text-muted-foreground mb-1"
               >
-                Due Time (e.g., 2:30 PM)
+                {/* Due Time (e.g., 2:30 PM) */}
               </label>
               <Input
                 id={`due-time-${todo.id}`}
